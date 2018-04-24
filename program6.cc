@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 
+//define matrix aspects
 #define MATRIX_WIDTH 3
 #define MATRIX_HEIGHT 5
 #define BOX_WIDTH 18
@@ -36,6 +37,7 @@ public:
 
 int main()
 {
+  //create the matrix
   WINDOW	*window;
   CDKSCREEN	*cdkscreen;
   CDKMATRIX     *myMatrix;        
@@ -60,8 +62,7 @@ int main()
       _exit(1);
     }
 
-  drawCDKMatrix(myMatrix, true);
-
+  //get data from binary file
   ifstream binInfile ("cs3377.bin", ios::in | ios::binary);
   
   BinaryFileHeader *binaryHeader = new BinaryFileHeader();
@@ -70,6 +71,7 @@ int main()
   binInfile.read((char *) binaryHeader, sizeof(BinaryFileHeader));
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
 
+  //strings that hold binary file info
   string magicNo, version, numRecords, strlenb,strlenB, strlenc, strlenC, strlend, strlenD, strlene, strlenE, seedMoney, leadership, entre, skillz;
   magicNo = "Magic: 0x";
   version = "Version: ";
@@ -79,20 +81,25 @@ int main()
   strlenD = "strlen: ";
   strlenE = "strlen: ";
 
+  //stringstream object to convert binary to dec, hex, and string
   stringstream convert;
   
+  //get magic number
   convert << hex << uppercase << binaryHeader->magicNumber;
   magicNo += convert.str();
-  convert.str("");
+  convert.str(""); //resets the stringstream object
 
+  //get version
   convert << dec << binaryHeader->versionNumber;
   version += convert.str();
   convert.str("");
 
+  //get number of records
   convert << binaryHeader->numRecords;
   numRecords += convert.str();
   convert.str("");
 
+  //get the first string and the length of the string
   convert << binaryRecord->stringBuffer;
   strlenb = convert.str();
   convert.str("");
@@ -100,6 +107,7 @@ int main()
   strlenB += convert.str();
   convert.str("");
 
+  //get the second string and the length of the string 
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   convert << binaryRecord->stringBuffer;
   strlenc = convert.str();
@@ -108,6 +116,7 @@ int main()
   strlenC += convert.str();
   convert.str("");
 
+  //get the third string and the length of the string 
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   convert << binaryRecord->stringBuffer;
   strlend = convert.str();
@@ -116,6 +125,7 @@ int main()
   strlenD += convert.str();
   convert.str("");
 
+  //get the fourth string and the length of the string 
   binInfile.read((char *) binaryRecord, sizeof(BinaryFileRecord));
   convert << binaryRecord->stringBuffer;
   strlene = convert.str();
@@ -124,6 +134,7 @@ int main()
   strlenE += convert.str();
   convert.str("");
 
+  //add the data to the matrix
   setCDKMatrixCell(myMatrix, 1, 1, magicNo.c_str());
   setCDKMatrixCell(myMatrix, 1, 2, version.c_str());
   setCDKMatrixCell(myMatrix, 1, 3, numRecords.c_str());
@@ -137,6 +148,7 @@ int main()
   setCDKMatrixCell(myMatrix, 5, 2, strlene.c_str());
   drawCDKMatrix(myMatrix, true);
 
+  //wait for user input to exit the program
   unsigned char x;
   cin >> x;
 
